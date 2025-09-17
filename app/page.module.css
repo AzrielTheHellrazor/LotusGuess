@@ -8,7 +8,82 @@
 .headerWrapper {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   padding: 1rem;
+}
+
+.walletInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e1bee7;
+}
+
+.address {
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.disconnectBtn {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.disconnectBtn:hover {
+  background: #ff3742;
+}
+
+.connectBtn {
+  background: linear-gradient(45deg, #e91e63, #ab47bc);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(171, 71, 188, 0.3);
+}
+
+.connectBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(171, 71, 188, 0.4);
+}
+
+.appInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  border: 1px solid #e1bee7;
+}
+
+.appName {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.walletStatus {
+  font-size: 0.8rem;
+  color: #4caf50;
+  font-weight: 600;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
 }
 
 .content {
@@ -53,11 +128,18 @@
   border: 2px solid #e1bee7;
   border-radius: 12px;
   font-size: 1rem;
+  color: #333;
+  background-color: #fff;
   resize: vertical;
   min-height: 80px;
   font-family: inherit;
   margin-bottom: 1rem;
   transition: border-color 0.3s ease;
+}
+
+.questionInput::placeholder {
+  color: #999;
+  opacity: 1;
 }
 
 .questionInput:focus {

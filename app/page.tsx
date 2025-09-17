@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Wallet } from "@coinbase/onchainkit/wallet";
+import { useAccount, useConnect } from "wagmi";
 import { sdk } from "@farcaster/miniapp-sdk";
 import styles from "./page.module.css";
 
@@ -43,18 +43,64 @@ export default function Home() {
   const [flowers, setFlowers] = useState<typeof FLOWERS>([]);
   const [selectedFlower, setSelectedFlower] = useState<typeof FLOWERS[0] | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  // Wagmi hooks for wallet connection
+  const { isConnected, address } = useAccount();
+  const { connect, connectors } = useConnect();
+  
+  // Debug wallet state
+  useEffect(() => {
+    console.log('Wallet state:', { isConnected, address, connectors: connectors.length });
+  }, [isConnected, address, connectors]);
 
   // Call ready() when component mounts to hide splash screen
   useEffect(() => {
     const initializeApp = async () => {
       try {
         await sdk.actions.ready();
+        
+        // Auto-connect wallet immediately
+        try {
+          if (connectors.length > 0 && !isConnected) {
+            console.log('Auto-connecting wallet...');
+            connect({ connector: connectors[0] });
+          }
+        } catch (error) {
+          console.log('Auto-connect failed:', error);
+        }
+        
+        setIsMounted(true);
       } catch (error) {
         console.error("Failed to initialize Farcaster SDK:", error);
+        setIsMounted(true);
       }
     };
     
     initializeApp();
+  }, []);
+  
+  // Auto-connect when connectors become available
+  useEffect(() => {
+    if (connectors.length > 0 && !isConnected && isMounted) {
+      console.log('Connectors available, auto-connecting...');
+      connect({ connector: connectors[0] });
+    }
+  }, [connectors, isConnected, isMounted, connect]);
+
+  // Error handler for wallet connection errors
+  useEffect(() => {
+    const handleError = (event: ErrorEvent | PromiseRejectionEvent) => {
+      console.error("Wallet connection error:", event);
+    };
+    
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleError);
+    
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleError);
+    };
   }, []);
 
   const handleAskQuestion = () => {
@@ -84,7 +130,17 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <header className={styles.headerWrapper}>
-        <Wallet />
+        {!isMounted ? (
+          <div className={styles.connectBtn}>Loading...</div>
+        ) : (
+          <div className={styles.appInfo}>
+            {isConnected && address && (
+              <span className={styles.walletStatus}>
+                💎 {address.slice(0, 6)}...{address.slice(-4)}
+              </span>
+            )}
+          </div>
+        )}
       </header>
 
       <div className={styles.content}>
