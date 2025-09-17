@@ -1,0 +1,58 @@
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="400" fill="url(#bg-gradient)"/>
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffeef8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f0f9ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="flower-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main lotus flower -->
+  <g transform="translate(400,200)">
+    <!-- Outer petals -->
+    <ellipse cx="0" cy="-60" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8"/>
+    <ellipse cx="42" cy="-42" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(45)"/>
+    <ellipse cx="60" cy="0" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(90)"/>
+    <ellipse cx="42" cy="42" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(135)"/>
+    <ellipse cx="0" cy="60" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(180)"/>
+    <ellipse cx="-42" cy="42" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(225)"/>
+    <ellipse cx="-60" cy="0" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(270)"/>
+    <ellipse cx="-42" cy="-42" rx="20" ry="40" fill="url(#flower-gradient)" opacity="0.8" transform="rotate(315)"/>
+    <!-- Center -->
+    <circle cx="0" cy="0" r="20" fill="#FFF"/>
+  </g>
+  
+  <!-- Smaller flowers around -->
+  <g transform="translate(200,120)">
+    <ellipse cx="0" cy="-20" rx="8" ry="15" fill="#FFB6C1" opacity="0.7"/>
+    <ellipse cx="14" cy="-14" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(45)"/>
+    <ellipse cx="20" cy="0" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(90)"/>
+    <ellipse cx="14" cy="14" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(135)"/>
+    <ellipse cx="0" cy="20" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(180)"/>
+    <ellipse cx="-14" cy="14" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(225)"/>
+    <ellipse cx="-20" cy="0" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(270)"/>
+    <ellipse cx="-14" cy="-14" rx="8" ry="15" fill="#FFB6C1" opacity="0.7" transform="rotate(315)"/>
+    <circle cx="0" cy="0" r="8" fill="#FFF"/>
+  </g>
+  
+  <g transform="translate(600,280)">
+    <ellipse cx="0" cy="-25" rx="10" ry="20" fill="#9C27B0" opacity="0.6"/>
+    <ellipse cx="18" cy="-18" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(45)"/>
+    <ellipse cx="25" cy="0" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(90)"/>
+    <ellipse cx="18" cy="18" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(135)"/>
+    <ellipse cx="0" cy="25" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(180)"/>
+    <ellipse cx="-18" cy="18" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(225)"/>
+    <ellipse cx="-25" cy="0" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(270)"/>
+    <ellipse cx="-18" cy="-18" rx="10" ry="20" fill="#9C27B0" opacity="0.6" transform="rotate(315)"/>
+    <circle cx="0" cy="0" r="10" fill="#FFF"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="350" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="24" font-weight="600">LotusGuess</text>
+  <text x="400" y="375" text-anchor="middle" fill="#999" font-family="Arial, sans-serif" font-size="16">Make Decisions with Flowers</text>
+</svg>
