@@ -1,0 +1,27 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="favicon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="16" fill="url(#favicon-gradient)"/>
+  
+  <!-- Lotus flower -->
+  <g transform="translate(16,16)">
+    <!-- Outer petals -->
+    <ellipse cx="0" cy="-8" rx="3" ry="6" fill="#FFF" opacity="0.9"/>
+    <ellipse cx="6" cy="-6" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(45)"/>
+    <ellipse cx="8" cy="0" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(90)"/>
+    <ellipse cx="6" cy="6" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(135)"/>
+    <ellipse cx="0" cy="8" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(180)"/>
+    <ellipse cx="-6" cy="6" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(225)"/>
+    <ellipse cx="-8" cy="0" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(270)"/>
+    <ellipse cx="-6" cy="-6" rx="3" ry="6" fill="#FFF" opacity="0.9" transform="rotate(315)"/>
+    <!-- Center -->
+    <circle cx="0" cy="0" r="3" fill="#FFF"/>
+  </g>
+</svg>

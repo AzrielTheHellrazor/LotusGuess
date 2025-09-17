@@ -16,7 +16,7 @@ export const minikitConfig = {
     name: "LotusGuess",
     subtitle: "Make Decisions with Flowers",
     description: "When you're struggling to make a choice, let flowers guide you! Ask your question, pick your flower, make your decision.",
-    screenshotUrls: [`${ROOT_URL}/screenshot-demo.svg`],
+    screenshotUrls: [`${ROOT_URL}/screenshot.svg`],
     iconUrl: `${ROOT_URL}/lotus-icon.svg`,
     splashImageUrl: `${ROOT_URL}/splash-flowers.svg`,
     splashBackgroundColor: "#FFB6C1",

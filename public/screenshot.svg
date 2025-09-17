@@ -5,6 +5,10 @@
       <stop offset="0%" style="stop-color:#ffeef8;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#f0f9ff;stop-opacity:1" />
     </linearGradient>
+    <linearGradient id="button-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#AB47BC;stop-opacity:1" />
+    </linearGradient>
   </defs>
   
   <!-- Header -->
@@ -17,12 +21,6 @@
   
   <!-- Button -->
   <rect x="20" y="220" width="360" height="50" rx="12" fill="url(#button-gradient)"/>
-  <defs>
-    <linearGradient id="button-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#E91E63;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#AB47BC;stop-opacity:1" />
-    </linearGradient>
-  </defs>
   <text x="200" y="250" text-anchor="middle" fill="#FFF" font-family="Arial, sans-serif" font-size="16" font-weight="600">🌺 Show Flowers</text>
   
   <!-- Flower options -->
