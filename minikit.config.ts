@@ -1,5 +1,7 @@
 const ROOT_URL = process.env.NEXT_PUBLIC_URL || process.env.VERCEL_URL || "http://localhost:3000";
-
+const FARCASTER_HEADER = process.env.FARCASTER_HEADER || "";
+const FARCASTER_PAYLOAD = process.env.FARCASTER_PAYLOAD || "";
+const FARCASTER_SIGNATURE = process.env.FARCASTER_SIGNATURE || "";
 /**
  * MiniApp configuration object. Must follow the Farcaster MiniApp specification.
  *
@@ -7,9 +9,9 @@ const ROOT_URL = process.env.NEXT_PUBLIC_URL || process.env.VERCEL_URL || "http:
  */
 export const minikitConfig = {
   accountAssociation: {
-    header: "",
-    payload: "",
-    signature: "",
+    header: FARCASTER_HEADER,
+    payload: FARCASTER_PAYLOAD,
+    signature: FARCASTER_SIGNATURE,
   },
   frame: {
     version: "1",
