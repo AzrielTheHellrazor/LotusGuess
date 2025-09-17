@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wallet } from "@coinbase/onchainkit/wallet";
+import { sdk } from "@farcaster/miniapp-sdk";
 import styles from "./page.module.css";
 
 // Flower types and meanings
@@ -42,6 +43,19 @@ export default function Home() {
   const [flowers, setFlowers] = useState<typeof FLOWERS>([]);
   const [selectedFlower, setSelectedFlower] = useState<typeof FLOWERS[0] | null>(null);
   const [showResult, setShowResult] = useState(false);
+
+  // Call ready() when component mounts to hide splash screen
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        await sdk.actions.ready();
+      } catch (error) {
+        console.error("Failed to initialize Farcaster SDK:", error);
+      }
+    };
+    
+    initializeApp();
+  }, []);
 
   const handleAskQuestion = () => {
     if (!question.trim()) return;
