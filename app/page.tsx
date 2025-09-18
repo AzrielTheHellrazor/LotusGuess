@@ -44,6 +44,8 @@ export default function Home() {
   const [selectedFlower, setSelectedFlower] = useState<typeof FLOWERS[0] | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
+  const [mintedNftUrl, setMintedNftUrl] = useState<string | null>(null);
   
   // Wagmi hooks for wallet connection
   const { isConnected, address } = useAccount();
@@ -125,6 +127,62 @@ export default function Home() {
     setFlowers([]);
     setSelectedFlower(null);
     setShowResult(false);
+    setMintedNftUrl(null);
+  };
+
+  const mintAsNFT = async () => {
+    if (!selectedFlower || !address) return;
+    
+    setIsMinting(true);
+    try {
+      // Generate NFT metadata
+      const nftData = {
+        question,
+        answer: selectedFlower.meaning,
+        flower: selectedFlower.name,
+        description: selectedFlower.description,
+        userAddress: address,
+        timestamp: new Date().toISOString()
+      };
+
+      // Call API to mint NFT
+      const response = await fetch('/api/mint-nft', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nftData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setMintedNftUrl(result.tokenUri);
+        console.log('NFT minted successfully:', result);
+      } else {
+        throw new Error('Minting failed');
+      }
+    } catch (error) {
+      console.error('NFT minting failed:', error);
+      alert('NFT minting failed. Please try again.');
+    } finally {
+      setIsMinting(false);
+    }
+  };
+
+  const shareOnFarcaster = () => {
+    if (!mintedNftUrl) return;
+    
+    const shareText = `I just made a decision with flowers! 🌸\n\nQuestion: ${question}\nAnswer: ${selectedFlower?.meaning}\n\nMinted as NFT: ${mintedNftUrl}`;
+    
+    // Use Farcaster SDK to share
+    try {
+      sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
+    } catch (error) {
+      console.error('Failed to share:', error);
+      // Fallback to copy to clipboard
+      navigator.clipboard.writeText(shareText);
+      alert('Share text copied to clipboard!');
+    }
   };
 
   return (
@@ -199,9 +257,35 @@ export default function Home() {
                 <strong>Your question:</strong> {question}
               </div>
             </div>
-            <button className={styles.resetButton} onClick={resetGame}>
-              🌱 Ask New Question
-            </button>
+            <div className={styles.actionButtons}>
+              {!mintedNftUrl ? (
+                <>
+                  <button 
+                    className={styles.mintButton} 
+                    onClick={mintAsNFT}
+                    disabled={isMinting || !isConnected}
+                  >
+                    {isMinting ? '🔄 Minting...' : '🎨 Mint as NFT'}
+                  </button>
+                  {!isConnected && (
+                    <p className={styles.connectHint}>Connect wallet to mint NFT</p>
+                  )}
+                </>
+              ) : (
+                <div className={styles.nftSuccess}>
+                  <p className={styles.successText}>✅ NFT Minted Successfully!</p>
+                  <button 
+                    className={styles.shareButton}
+                    onClick={shareOnFarcaster}
+                  >
+                    📢 Share on Farcaster
+                  </button>
+                </div>
+              )}
+              <button className={styles.resetButton} onClick={resetGame}>
+                🌱 Ask New Question
+              </button>
+            </div>
           </div>
         )}
 
