@@ -260,6 +260,7 @@ export default function Home() {
             <div className={styles.actionButtons}>
               {!mintedNftUrl ? (
                 <>
+                <div className="flex center ">
                   <button 
                     className={styles.mintButton} 
                     onClick={mintAsNFT}
@@ -267,9 +268,13 @@ export default function Home() {
                   >
                     {isMinting ? '🔄 Minting...' : '🎨 Mint as NFT'}
                   </button>
+                  <button className={styles.resetButton} onClick={resetGame}>
+                  🌱 Ask New Question
+                  </button>
                   {!isConnected && (
                     <p className={styles.connectHint}>Connect wallet to mint NFT</p>
                   )}
+                  </div>
                 </>
               ) : (
                 <div className={styles.nftSuccess}>
@@ -282,9 +287,7 @@ export default function Home() {
                   </button>
                 </div>
               )}
-              <button className={styles.resetButton} onClick={resetGame}>
-                🌱 Ask New Question
-              </button>
+              
             </div>
           </div>
         )}
