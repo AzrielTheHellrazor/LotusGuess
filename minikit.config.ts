@@ -26,10 +26,10 @@ export const minikitConfig = {
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "utility",
     tags: ["decision", "fun", "flowers", "choice"],
-    heroImageUrl: `${ROOT_URL}/flowers-hero.png`,
+    heroImageUrl: `${ROOT_URL}flowers-hero.png`,
     tagline: "Enjoy making decisions with flowers",
     ogTitle: "LotusGuess - Make Decisions with Flowers",
     ogDescription: "When you are struggling to make a choice, let flowers guide you!",
-    ogImageUrl: `${ROOT_URL}/flowers-hero.png`,
+    ogImageUrl: `${ROOT_URL}flowers-hero.png`,
   },
 } as const;
