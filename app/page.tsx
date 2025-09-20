@@ -130,123 +130,16 @@ export default function Home() {
     setMintedNftUrl(null);
   };
 
-  const generateShareImage = async (): Promise<string> => {
-    // Create canvas for image generation
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx || !selectedFlower) return '';
-
-    // Set canvas size
-    canvas.width = 800;
-    canvas.height = 600;
-
-    // Background gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#ffeef8');
-    gradient.addColorStop(1, '#f0f9ff');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Title
-    ctx.fillStyle = '#e91e63';
-    ctx.font = 'bold 36px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('🌸 LotusGuess Decision 🌸', canvas.width / 2, 80);
-
-    // Question background
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-    const x = 50;
-    const y = 120;
-    const width = canvas.width - 100;
-    const height = 100;
-    const radius = 20;
-    
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    ctx.fill();
-
-    // Question text
-    ctx.fillStyle = '#333';
-    ctx.font = '24px Arial';
-    ctx.fillText(`"${question}"`, canvas.width / 2, 160);
-
-    // Flower emoji (large)
-    ctx.font = '120px Arial';
-    ctx.fillText(selectedFlower.name.split(' ')[0], canvas.width / 2, 280);
-
-    // Answer
-    ctx.fillStyle = '#e91e63';
-    ctx.font = 'bold 32px Arial';
-    ctx.fillText(`Answer: ${selectedFlower.meaning}`, canvas.width / 2, 340);
-
-    // Flower name and description
-    ctx.fillStyle = '#666';
-    ctx.font = '20px Arial';
-    ctx.fillText(`${selectedFlower.name.split(' ')[1]} - ${selectedFlower.description}`, canvas.width / 2, 380);
-
-    // App info
-    ctx.fillStyle = '#999';
-    ctx.font = '16px Arial';
-    ctx.fillText('Made with LotusGuess - Try it yourself!', canvas.width / 2, 450);
-
-    return canvas.toDataURL('image/png');
-  };
-
   const shareQuestion = async () => {
     if (!selectedFlower) return;
     
     setIsMinting(true);
     try {
-      // Generate share image
-      const imageDataUrl = await generateShareImage();
-      
       // Create share text for Farcaster
-      const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\n${window.location.origin}`;
+      const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\nhttps://farcaster.xyz/miniapps/1CT07OkIL9jv/lotusguess`;
       
-      // Convert image to blob
-      const response = await fetch(imageDataUrl);
-      const blob = await response.blob();
-      
-      // Try to share with image using Web Share API
-      if (navigator.share) {
-        try {
-          const file = new File([blob], 'lotusguess-decision.png', { type: 'image/png' });
-          await navigator.share({
-            title: 'My LotusGuess Decision',
-            text: shareText,
-            files: [file]
-          });
-        } catch {
-          console.log('File sharing not supported, trying text only');
-          // If file sharing fails, try text only
-          await navigator.share({
-            title: 'My LotusGuess Decision',
-            text: shareText
-          });
-        }
-      } else {
-        // Fallback: download image and open Warpcast compose
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'lotusguess-decision.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        // Then open Warpcast compose
-        await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
-      }
+      // Use Farcaster SDK to open Warpcast compose with the text
+      await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
       
       setMintedNftUrl('shared'); // Mark as shared
       console.log('Question shared on Farcaster successfully');
@@ -254,7 +147,7 @@ export default function Home() {
       console.error('Farcaster sharing failed:', error);
       // Fallback: copy to clipboard
       try {
-        const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\n${window.location.origin}`;
+        const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\nhttps://farcaster.xyz/miniapps/1CT07OkIL9jv/lotusguess`;
         await navigator.clipboard.writeText(shareText);
         alert('Decision copied to clipboard! You can paste it anywhere to share! 📋');
         setMintedNftUrl('shared');
