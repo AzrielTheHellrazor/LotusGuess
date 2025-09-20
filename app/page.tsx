@@ -130,60 +130,123 @@ export default function Home() {
     setMintedNftUrl(null);
   };
 
-  const mintAsNFT = async () => {
-    if (!selectedFlower || !address) return;
+  const generateShareImage = async (): Promise<string> => {
+    // Create canvas for image generation
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx || !selectedFlower) return '';
+
+    // Set canvas size
+    canvas.width = 800;
+    canvas.height = 600;
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, '#ffeef8');
+    gradient.addColorStop(1, '#f0f9ff');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = '#e91e63';
+    ctx.font = 'bold 36px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('🌸 LotusGuess Decision 🌸', canvas.width / 2, 80);
+
+    // Question background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    const x = 50;
+    const y = 120;
+    const width = canvas.width - 100;
+    const height = 100;
+    const radius = 20;
+    
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
+
+    // Question text
+    ctx.fillStyle = '#333';
+    ctx.font = '24px Arial';
+    ctx.fillText(`"${question}"`, canvas.width / 2, 160);
+
+    // Flower emoji (large)
+    ctx.font = '120px Arial';
+    ctx.fillText(selectedFlower.name.split(' ')[0], canvas.width / 2, 280);
+
+    // Answer
+    ctx.fillStyle = '#e91e63';
+    ctx.font = 'bold 32px Arial';
+    ctx.fillText(`Answer: ${selectedFlower.meaning}`, canvas.width / 2, 340);
+
+    // Flower name and description
+    ctx.fillStyle = '#666';
+    ctx.font = '20px Arial';
+    ctx.fillText(`${selectedFlower.name.split(' ')[1]} - ${selectedFlower.description}`, canvas.width / 2, 380);
+
+    // App info
+    ctx.fillStyle = '#999';
+    ctx.font = '16px Arial';
+    ctx.fillText('Made with LotusGuess - Try it yourself!', canvas.width / 2, 450);
+
+    return canvas.toDataURL('image/png');
+  };
+
+  const shareQuestion = async () => {
+    if (!selectedFlower) return;
     
     setIsMinting(true);
     try {
-      // Generate NFT metadata
-      const nftData = {
-        question,
-        answer: selectedFlower.meaning,
-        flower: selectedFlower.name,
-        description: selectedFlower.description,
-        userAddress: address,
-        timestamp: new Date().toISOString()
-      };
-
-      // Call API to mint NFT
-      const response = await fetch('/api/mint-nft', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nftData),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setMintedNftUrl(result.tokenUri);
-        console.log('NFT minted successfully:', result);
+      // Generate share image
+      const imageDataUrl = await generateShareImage();
+      
+      // Create share text for Farcaster
+      const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\n${window.location.origin}`;
+      
+      // Convert image to blob
+      const response = await fetch(imageDataUrl);
+      const blob = await response.blob();
+      
+      // Try to share with image using Web Share API
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'lotusguess-decision.png', { type: 'image/png' })] })) {
+        const file = new File([blob], 'lotusguess-decision.png', { type: 'image/png' });
+        await navigator.share({
+          title: 'My LotusGuess Decision',
+          text: shareText,
+          files: [file]
+        });
       } else {
-        throw new Error('Minting failed');
+        // Fallback: open Warpcast compose with text only
+        await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
       }
+      
+      setMintedNftUrl('shared'); // Mark as shared
+      console.log('Question shared on Farcaster successfully');
     } catch (error) {
-      console.error('NFT minting failed:', error);
-      alert('NFT minting failed. Please try again.');
+      console.error('Farcaster sharing failed:', error);
+      // Fallback: copy to clipboard
+      try {
+        const shareText = `🌸 LotusGuess Decision 🌸\n\n"${question}"\n\nMy answer: ${selectedFlower.meaning}\nFlower: ${selectedFlower.name}\n\nMade my decision with flowers! Try LotusGuess for your choices too! 🌺\n\n${window.location.origin}`;
+        await navigator.clipboard.writeText(shareText);
+        alert('Decision copied to clipboard! You can paste it anywhere to share! 📋');
+        setMintedNftUrl('shared');
+      } catch {
+        alert('Sharing failed. Please try again.');
+      }
     } finally {
       setIsMinting(false);
     }
   };
 
-  const shareOnFarcaster = () => {
-    if (!mintedNftUrl) return;
-    
-    const shareText = `I just made a decision with flowers! 🌸\n\nQuestion: ${question}\nAnswer: ${selectedFlower?.meaning}\n\nMinted as NFT: ${mintedNftUrl}`;
-    
-    // Use Farcaster SDK to share
-    try {
-      sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
-    } catch (error) {
-      console.error('Failed to share:', error);
-      // Fallback to copy to clipboard
-      navigator.clipboard.writeText(shareText);
-      alert('Share text copied to clipboard!');
-    }
-  };
 
   return (
     <div className={styles.container}>
@@ -260,32 +323,28 @@ export default function Home() {
             <div className={styles.actionButtons}>
               {!mintedNftUrl ? (
                 <>
-                <div className="flex center ">
-                  <button 
-                    className={styles.mintButton} 
-                    onClick={mintAsNFT}
-                    disabled={isMinting || !isConnected}
-                  >
-                    {isMinting ? '🔄 Minting...' : '🎨 Mint as NFT'}
-                  </button>
-                  <button className={styles.resetButton} onClick={resetGame}>
-                  🌱 Ask New Question
-                  </button>
-                  {!isConnected && (
-                    <p className={styles.connectHint}>Connect wallet to mint NFT</p>
-                  )}
+                  <div className={styles.buttonGroup}>
+                    <button 
+                      className={styles.mintButton} 
+                      onClick={shareQuestion}
+                      disabled={isMinting}
+                    >
+                      {isMinting ? '🔄 Sharing...' : '📢 Share Your Question'}
+                    </button>
+                    <button className={styles.resetButton} onClick={resetGame}>
+                      🌱 Ask New Question
+                    </button>
                   </div>
                 </>
               ) : (
+                <>
                 <div className={styles.nftSuccess}>
-                  <p className={styles.successText}>✅ NFT Minted Successfully!</p>
-                  <button 
-                    className={styles.shareButton}
-                    onClick={shareOnFarcaster}
-                  >
-                    📢 Share on Farcaster
-                  </button>
+                  <p className={styles.successText}>✅ Decision Shared Successfully!</p>
                 </div>
+                <button className={styles.resetButton} onClick={resetGame}>
+                🔄 Return
+              </button>
+              </>
               )}
               
             </div>
