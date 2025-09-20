@@ -217,15 +217,34 @@ export default function Home() {
       const blob = await response.blob();
       
       // Try to share with image using Web Share API
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'lotusguess-decision.png', { type: 'image/png' })] })) {
-        const file = new File([blob], 'lotusguess-decision.png', { type: 'image/png' });
-        await navigator.share({
-          title: 'My LotusGuess Decision',
-          text: shareText,
-          files: [file]
-        });
+      if (navigator.share) {
+        try {
+          const file = new File([blob], 'lotusguess-decision.png', { type: 'image/png' });
+          await navigator.share({
+            title: 'My LotusGuess Decision',
+            text: shareText,
+            files: [file]
+          });
+        } catch {
+          console.log('File sharing not supported, trying text only');
+          // If file sharing fails, try text only
+          await navigator.share({
+            title: 'My LotusGuess Decision',
+            text: shareText
+          });
+        }
       } else {
-        // Fallback: open Warpcast compose with text only
+        // Fallback: download image and open Warpcast compose
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'lotusguess-decision.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Then open Warpcast compose
         await sdk.actions.openUrl(`https://warpcast.com/~/compose?text=${encodeURIComponent(shareText)}`);
       }
       
